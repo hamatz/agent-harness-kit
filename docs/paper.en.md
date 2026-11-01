@@ -392,7 +392,7 @@ flowchart TB
   F1["<b>Filter 1: Memory</b><br/>Record it, structured, in LESSONS.md"]
   F1 -->|"The same event recurs often, or the risk is serious"| F2
   F2["<b>Filter 2: Immunity</b><br/>Regression immunity test (Red-First)<br/>The machine blocks the merge by exit code"]
-  F2 -->|"Only attitudes that tests and linters cannot mechanize"| F3
+  F2 -->|"Only judgment guidelines that tests and linters cannot mechanize"| F3
   F3["<b>Filter 3: Rules (the residue of Wishes)</b><br/>Promote to one line in AGENTS.md, keep within 20–30 lines"]
   F3 -.->|"Once mechanized, delete from AGENTS.md (pruning)"| F2
 ```
