@@ -20,7 +20,7 @@ const APP = path.join(EXAMPLE, 'compositor.html');
 const BOOK = path.join(EXAMPLE, 'book');
 const MATRIX = path.join(HERE, 'verify_matrix.mjs');
 const WORK = path.resolve('test-results', 'demo');
-const BREAK = ['for(var i=0;i<4;i++){ alignPages(); placeFigures(); }', '/* broken for the demo */'];
+const BREAK = ['for(var i=0;i<4;i++){ alignPages(); placeFigures(); keepTogether(); }', '/* broken for the demo */'];
 
 const say = (s = '') => console.log(s);
 const run = (app) => spawnSync(process.execPath, [MATRIX, '--app', app, '--project', BOOK], { encoding: 'utf8' });

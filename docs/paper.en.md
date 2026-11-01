@@ -772,7 +772,7 @@ The starter kit includes a generic `tests/verify_ui.mjs` that checks only for br
 
 Following "eyes for finding causes, a yardstick for pass/fail" from Section 3.1, this script checks the typesetting invariants by computing positions and judges by exit code. It takes a screenshot but does not use it for pass/fail. A check that looks only at console errors lets layout breakage like the case in Section 1.4 pass straight through.
 
-- **Conditions checked** — Zero browser errors. In paper mode, no figure or code figure crosses a page boundary, and every chapter of the main body starts at the top of a page.
+- **Conditions checked** — Zero browser errors. In paper mode, no figure, code figure or table crosses a page boundary, every chapter of the main body starts at the top of a page, and no subheading is stranded at the bottom of a page.
 - **How failures are reported** — For each violation, an EXPECTED and SAW pair is printed (the primary evidence of Section 2.2). From this output alone, the agent knows which figure overflowed by how many pixels on which page, and can fix it itself.
 - **Implementation notes** — The `.mjs` extension removes the need to declare ESM. Instead of the deprecated `networkidle`, it waits for fonts to finish loading (because the typesetting is redone after fonts load). The path of an exported HTML file can also be passed directly.
 
@@ -787,6 +787,8 @@ Following "eyes for finding causes, a yardstick for pass/fail" from Section 3.1,
 
 **The hole in the yardstick was found by breaking the yardstick** — The first version of the script had been checked only on vertical A5. Run on horizontal writing, it returned Exit 0 even for the version with chapter page breaks removed. In horizontal writing, one page is one column of a multi-column layout, and every element starts at the column's left edge, so a check that looks only at horizontal position sees no difference. The check was fixed to judge horizontal writing by "distance from the top of the column" and "whether a box is split across several columns", giving the results above. The "weakness of the yardstick itself" from item 4 of Section 2.2 had happened in this very test. Had it not been confirmed that broken versions fail, a test that detected no horizontal-writing breakage at all would have kept returning Exit 0.
 
+**Breakage the yardstick did not measure, found in a real manuscript** — Later, an internal booklet (5 tables, about 30 subheadings) was typeset with this tool. It passed all 8 checks, yet looking page by page revealed a table split across two pages and subheadings stranded at the bottom of a page in 4 places. The checks measured only figures and chapters, and the test book had no tables or subheadings, so neither had ever been tried. So first "no table crosses a page boundary" and "no subheading is stranded at the bottom of a page" were added to the checks, it was confirmed that the booklet failed in all 8 combinations with the unfixed tool, and only then was the tool fixed. A chapter with tables and subheadings was also added to the test book, and the self-test now confirms that versions which stop pushing them to the next page fail only the 4 vertical or 4 horizontal combinations respectively. A yardstick guarantees correctness only within what it measures. What prompted widening that range was a real manuscript outside the checks, and the human eye.
+
 ```javascript
 /**
  * examples/compositor/tests/verify_layout.mjs
@@ -794,8 +796,9 @@ Following "eyes for finding causes, a yardstick for pass/fail" from Section 3.1,
  * 汎用のブラウザエラー検査（kit/tests/verify_ui.mjs）に、Compositor の紙面の不変条件を足したもの。
  *   1. ブラウザのエラーが 0 件（コンソール・未捕捉例外・読み込み失敗）
  *   2. 紙面モードのとき、組版の不変条件を満たす
- *      - どの図版・コード図版もページの境目をまたがない
+ *      - どの図版・コード図版・表もページの境目をまたがない
  *      - 本編の章はページの頭から始まる
+ *      - 小見出しがページの末尾に取り残されない（見出しと続く本文が同じページに載る）
  * スクリーンショットは人間が原因を探すための補助で、合否には使わない。
  *
  * 準備: npm install -D playwright && npx playwright install chromium
@@ -859,7 +862,8 @@ try {
       return (vert ? ref.right - b.right : b.left - ref.left) / z;
     };
     const pageOf = (x) => Math.floor((x + TOL) / w) + 1;
-    const inPage = (x) => ((x % w) + w) % w;
+    // ページ内の位置。境目のわずか手前（丸め誤差の範囲）は、pageOf と同じく次のページの頭として扱う
+    const inPage = (x) => { const r = ((x % w) + w) % w; return w - r < TOL ? 0 : r; };
     const label = (el) => {
       const t = el.querySelector('figcaption, .bar');
       return ((t && t.textContent) || el.className || el.tagName).trim().slice(0, 40);
@@ -868,22 +872,42 @@ try {
     const figures = [...reel.querySelectorAll('figure, .code')].filter((el) =>
       !el.closest('.footnotes, .outline') &&
       !(el.parentElement && el.parentElement.closest('figure, .code'))); // 入れ子は外側だけ
+    const tables = [...reel.querySelectorAll('.prose table')];
+    // 図版と表は「ページの境目をまたがない」で同じ測り方をする。規則の名前だけ分けて出す
+    const boxes = [...figures.map((el) => [el, '図版がページの境目をまたがない', label(el)]),
+                   ...tables.map((el) => [el, '表がページの境目をまたがない',
+                     ((el.rows[0] && el.rows[0].textContent) || 'table').replace(/\s+/g, ' ').trim().slice(0, 40)])];
+    // 小見出しと、その直後の要素。直後が無い（節の末尾の）見出しは対象外
+    const headings = [...reel.querySelectorAll('.prose h3, .prose h4')]
+      .filter((h) => h.nextElementSibling)
+      .map((h) => [h, h.nextElementSibling, h.textContent.trim().slice(0, 40)]);
     const chapters = reel.querySelectorAll('section.movement:not(.frontmatter)');
     const chapterName = (el) => { const h = el.querySelector('h2'); return (h && h.textContent) || el.id; };
 
     if (vert) {
       // 縦組み：ページは右から左へ並ぶ。位置は「本文の先頭からの横の距離」で測る
-      for (const el of figures) {
+      for (const [el, rule, what] of boxes) {
         const s = startOf(el);
         const wid = el.getBoundingClientRect().width / z;
         const rem = inPage(s);
         if (rem + wid > w + TOL) {
           out.push({
-            rule: '図版がページの境目をまたがない',
-            what: label(el),
+            rule,
+            what,
             expected: 'ページ内の位置 + 幅 <= ' + w.toFixed(0) + 'px',
             saw: rem.toFixed(1) + ' + ' + wid.toFixed(1) + ' = ' + (rem + wid).toFixed(1) +
                  'px（' + pageOf(s) + 'ページ目から' + pageOf(s + wid) + 'ページ目へ）',
+          });
+        }
+      }
+      for (const [h, next, what] of headings) {
+        const hp = pageOf(startOf(h)), np = pageOf(startOf(next));
+        if (hp !== np) {
+          out.push({
+            rule: '小見出しがページの末尾に取り残されない',
+            what,
+            expected: '見出しと続く本文が同じページ',
+            saw: '見出しは' + hp + 'ページ目、続く本文は' + np + 'ページ目',
           });
         }
       }
@@ -904,7 +928,7 @@ try {
       // 「ページの頭」は段の上端、「ページをまたぐ」は箱が複数の段に分かれていること
       const fr = flow.getBoundingClientRect();
       const pageNo = (r) => Math.floor(((r.left - ref.left) / z + TOL) / w) + 1;
-      for (const el of figures) {
+      for (const [el, rule, what] of boxes) {
         const rects = [...el.getClientRects()].filter((r) => r.width && r.height);
         const r0 = rects[0];
         if (!r0) continue;
@@ -912,12 +936,26 @@ try {
         const over = (last.bottom - fr.bottom) / z;
         if (rects.length > 1 || over > TOL) {
           out.push({
-            rule: '図版がページの境目をまたがない',
-            what: label(el),
+            rule,
+            what,
             expected: '1つのページ（段）に収まる',
             saw: rects.length > 1
               ? rects.length + 'つの段に分割（' + pageNo(r0) + 'ページ目から' + pageNo(last) + 'ページ目へ）'
               : 'ページの下端を ' + over.toFixed(1) + 'px 超過（' + pageNo(r0) + 'ページ目）',
+          });
+        }
+      }
+      const rectsOf = (el) => [...el.getClientRects()].filter((r) => r.width && r.height);
+      for (const [h, next, what] of headings) {
+        const hr = rectsOf(h), nr = rectsOf(next);
+        if (!hr.length || !nr.length) continue;
+        const hp = pageNo(hr[hr.length - 1]), np = pageNo(nr[0]);
+        if (hp !== np) {
+          out.push({
+            rule: '小見出しがページの末尾に取り残されない',
+            what,
+            expected: '見出しと続く本文が同じページ（段）',
+            saw: '見出しは' + hp + 'ページ目、続く本文は' + np + 'ページ目',
           });
         }
       }

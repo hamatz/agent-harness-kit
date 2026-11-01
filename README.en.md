@@ -92,7 +92,7 @@ Provided the checklist above is satisfied:
 - No change that fails the required checks gets merged, whoever made it
 - Changes to tests, gates and the specification need human approval
 - The agent cannot read secrets that do not exist in its working environment
-- In the typesetting example, figures crossing page boundaries and broken chapter page breaks are detected across all 8 combinations of page size × writing direction
+- In the typesetting example, figures and tables crossing page boundaries, broken chapter page breaks and subheadings stranded at the bottom of a page are detected across all 8 combinations of page size × writing direction (page breaks in print are not covered)
 
 **It does not guarantee**
 - The correctness of anything the tests don't measure. Errors in the specification itself, authorization loopholes, performance regressions, unknown attacks and so on can remain even when the tests pass
@@ -125,6 +125,8 @@ This repository's CI (`npm test`) builds deliberately broken versions of the typ
 | Version with vertical page alignment disabled | 0/4 | 4/4 pass |
 | Version with horizontal chapter page breaks removed | 4/4 pass | 0/4 |
 | Version with code figures taller than a page | 4/4 pass | 0/4 |
+| Version that does not push tables and subheadings to the next page (vertical) | 0/4 | 4/4 pass |
+| Version that does not push tables and subheadings to the next page (horizontal) | 4/4 pass | 0/4 |
 
 A check that fails everything and a check that looks at nothing are both caught here. The background is in Appendices 5 and 6 of the paper.
 

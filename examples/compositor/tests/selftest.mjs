@@ -31,7 +31,7 @@ const CASES = [
   { name: 'ツールそのもの', patch: null, expectFail: [] },
   {
     name: '縦組みのページ揃えと図版の運搬を止めた版',
-    patch: ['for(var i=0;i<4;i++){ alignPages(); placeFigures(); }', '/* disabled by selftest */'],
+    patch: ['for(var i=0;i<4;i++){ alignPages(); placeFigures(); keepTogether(); }', '/* disabled by selftest */'],
     expectFail: only('vertical'),
   },
   {
@@ -43,6 +43,17 @@ const CASES = [
     name: 'コード図版を横組みのページより高くした版',
     // ADDON_CSS の末尾（テンプレート文字列の閉じ）に1行足す
     patch: ['\n`;\n\nconst DB_NAME', '\n  html.paper-mode:not(.vertical) .reel .code pre{ padding-top:calc(var(--page-run) * .7) }\n`;\n\nconst DB_NAME'],
+    expectFail: only('horizontal'),
+  },
+  {
+    name: '縦組みで表と小見出しを次のページへ送らない版',
+    patch: ['alignPages(); placeFigures(); keepTogether(); }', 'alignPages(); placeFigures(); }'],
+    expectFail: only('vertical'),
+  },
+  {
+    name: '横組みで表と小見出しを次のページへ送らない版',
+    // BOOK_CSS は JSON 文字列として埋め込まれているので、改行は \\n のまま探す
+    patch: ['  html.paper-mode:not(.vertical) .prose table{ break-inside:avoid; }\\n  html.paper-mode:not(.vertical) .prose h3,html.paper-mode:not(.vertical) .prose h4{ break-after:avoid; }\\n', ''],
     expectFail: only('horizontal'),
   },
 ];
