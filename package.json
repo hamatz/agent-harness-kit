@@ -1,0 +1,20 @@
+{
+  "name": "agent-harness-kit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "自律型AIエージェント時代のソフトウェア工学：論文とスターターキット",
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/check_translation.mjs && node examples/compositor/tests/selftest.mjs",
+    "demo": "node examples/compositor/tests/demo.mjs",
+    "verify:matrix": "node examples/compositor/tests/verify_matrix.mjs --app examples/compositor/compositor.html --project examples/compositor/book"
+  },
+  "devDependencies": {
+    "marked": "18.0.7",
+    "playwright": "^1.64.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

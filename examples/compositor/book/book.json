@@ -1,0 +1,24 @@
+{
+  "format": "compositor-book/1",
+  "title": "検証用の本",
+  "kicker": "技術同人誌 · 草稿",
+  "version": "v0.1",
+  "year": "2026",
+  "draftnoteTitle": "この草稿について",
+  "direction": "horizontal",
+  "paperSize": "A5",
+  "viewMode": "screen",
+  "coverDirection": "follow",
+  "coverEmblem": "orbit",
+  "coverVeil": "normal",
+  "coverBgPos": "center",
+  "coloVeil": "normal",
+  "coloBgPos": "center",
+  "coverMarkSize": "m",
+  "coloMarkSize": "m",
+  "chapters": [
+    "第1章.md",
+    "第2章.md",
+    "第3章.md"
+  ]
+}
