@@ -1,148 +1,144 @@
-# agent-harness-kit
+# Agent Harness Kit
 
-**Redefining Software Engineering for the Age of Autonomous AI Agents** — a paper, and a starter kit you can use as-is.
+**Build the Factory, Not Just the Software.**
 
-When AI agents write your code, move the basis of trust from "how smart the model is" to "how strict the verification is". This repository collects the ideas behind that shift in a paper — the three layers of Harness, Loop and Graph, memoryless review, and a self-learning loop that promotes failures into regression immunity tests — together with templates and verification code that actually runs.
+Redefining Software Engineering in the Age of Autonomous AI Agents.
 
-> 日本語版は [README.md](README.md) です。The Japanese versions of this README and of the paper are canonical; the English versions are translations.
+This repository publishes research on the engineering of verifiable, recoverable, and continuously evolving software production systems — Software Factories.
 
-## What's inside
+> [日本語 README](README.md) | [English Paper](docs/paper.en.md) | [Japanese Paper](docs/paper.md)
+
+## Why Software Factories?
+
+AI agents have the potential to dramatically expand our ability to write software. Yet an increase in code generation capacity does not automatically translate into an increase in quality assurance capacity.
+
+What we need is not unconditional trust in AI, but a production system that harnesses its capabilities while detecting errors and controlling which changes are accepted.
+
+And if that production system could itself improve through the experience of building software, how much more could we create?
+
+This research explores the engineering required to make that possible.
+
+## Paper v2.0
+
+**Redefining Software Engineering in the Age of Autonomous AI Agents**
+
+*From AI-Assisted Craftsmanship to Verifiable Software Factories*
+
+November 2026 · @hamatz
+
+- [English translation](docs/paper.en.md)
+- [Japanese original — canonical version](docs/paper.md)
+- [Research evidence — Phase 74 Evidence Bundle](docs/phase74-evidence.tar.gz)
+
+The paper is an independently published, non-peer-reviewed design and experience report based on the development of a reference implementation and retrospective analysis of its operation.
+
+## Seven Engineering Principles
+
+| Principle | Objective |
+|---|---|
+| **Canonical Path Engineering** | Make the right path the easiest path. |
+| **Intent-to-Contract Compilation** | Transform human intent into verifiable engineering contracts. |
+| **Evidence-Bound Execution** | Bind verification evidence to the exact artifact being accepted. |
+| **Verification of Verification** | Verify the mechanisms that perform verification. |
+| **Recoverable Autonomy** | Enable safe recovery when autonomous execution fails. |
+| **Composable Autonomy** | Integrate autonomous work units within explicit responsibility boundaries. |
+| **Bounded Self-Improvement** | Improve the production system within finite budgets and defined authority boundaries. |
+
+These principles are intended to remain applicable across different models, agent tools, programming languages, and implementation architectures.
+
+## Engineering Metabolism
+
+**Build Software. Build the Ability to Build.**
+
+Engineering Metabolism is the mechanism through which software development experience is transformed into verifiable and durable production capability.
+
+While Harness, Loop, and Graph define the structure of a Software Factory at a given point in time, Engineering Metabolism defines how that structure evolves over time.
+
+It encompasses five activities:
+
+- **Capture** — Observe and record experience.
+- **Distill** — Extract reusable engineering lessons.
+- **Promote** — Translate lessons into tools, tests, types, and enforceable gates.
+- **Validate** — Verify the effectiveness and side effects of improvements.
+- **Prune** — Reassess and retire obsolete or redundant constraints.
+
+The objective is not simply to give agents more knowledge. It is to turn experience into engineering capabilities that remain effective even when future agents have no memory of that experience.
+
+Engineering Metabolism does not imply unrestricted self-improvement. Improvements themselves must remain subject to verification, authorization, budgets, and stopping conditions.
+
+## Reference Implementation — Auto Developer
+
+[**Auto Developer**](https://github.com/hamatz/auto_developer)
+
+Auto Developer is the open-source reference implementation of the engineering principles presented in this paper.
+
+Its capabilities include:
+
+- Specification compilation through a Spec Compiler
+- Separation of implementation, verification, and independent review
+- Evidence-bound acceptance gates
+- Failure quarantine and recovery
+- Independent auditing and bounded improvement cycles
+- Experimental multi-team execution
+
+The implementation status and remaining limitations of each engineering principle are documented in Section 2.3 of the paper.
+
+If you want to build and operate a Software Factory rather than simply study its design, start with the Auto Developer repository.
+
+## Theory, Implementation, Evidence
+
+Our research follows a continuous cycle: implement the theory, use the implementation in actual software development, and feed the resulting experience back into the theory.
+
+Successes are not our only research subjects. Failures, rejected reviews, human interventions, and limitations of the production system are equally valuable.
+
+The published evidence bundle contains execution records, verification and review evidence, quarantined changes, and scripts for checking the consistency of the published records.
+
+The objective is to make the reported observations open to independent examination, rather than asking readers to accept them on trust alone.
+
+## Repository Guide
 
 | Path | Contents |
-| --- | --- |
-| [`docs/paper.en.md`](docs/paper.en.md) | The paper (English translation) |
-| [`docs/paper.md`](docs/paper.md) | The paper (Japanese, canonical) |
-| [`kit/`](kit/) | Templates to copy into your own repository |
-| [`examples/compositor/`](examples/compositor/) | Compositor, the typesetting tool from the paper's case study, with its full set of checks |
+|---|---|
+| [`docs/paper.md`](docs/paper.md) | Paper v2.0 — canonical Japanese version |
+| [`docs/paper.en.md`](docs/paper.en.md) | English translation |
+| [`docs/phase74-evidence.tar.gz`](docs/phase74-evidence.tar.gz) | Research evidence bundle |
+| [`examples/compositor/`](examples/compositor/) | Early experiment in verification of verification |
+| [`scripts/`](scripts/) | Validation scripts for published research materials |
 
-The templates in `kit/` and the code in `examples/` are commented in Japanese.
+### From Starter Kit to Research Repository
 
-## Try it in 5 minutes
+This project originally began as a paper accompanied by a starter kit for applying Harness Engineering practices manually.
 
-See for yourself, in real failure output, what it means to decide based on "what the machine measured" rather than "the AI said it fixed it".
+With the emergence of Auto Developer as a dedicated reference implementation, the original starter kit has been retired from active distribution.
 
-```sh
-npm ci
-npx playwright install --with-deps chromium
-npm run demo
-```
+The original templates, prompts, and configuration examples remain available in the [historical version of this repository](https://github.com/hamatz/agent-harness-kit/tree/f335368d285e83f41bf1bb1738724b2e34827008).
 
-The demo deliberately breaks one part of the typesetting tool (imagine an AI breaking it in passing while fixing something else) and checks the book in 8 combinations: 4 page sizes × vertical and horizontal writing. Only the 4 broken combinations fail, each with what was expected and what was observed (EXPECTED / SAW). The unbroken tool passes all 8.
+The Compositor example is retained as an early practical demonstration of objective verification, deliberate defect injection, and regression prevention.
 
-## What's in `kit/`
+## Research Status
 
-| File | Role |
-| --- | --- |
-| `AGENTS.md` | Instructions for the agent. Contains only an index of what the machine enforces, plus the residue of norms that cannot be mechanized |
-| `SPEC.md` | Specification and invariants. A human always reads and approves it |
-| `PLAN.md` | Progress of the work. State lives here, not in conversation logs |
-| `PROMPTS.md` / `PROMPTS.en.md` | Example messages to give the agent at each stage, from brainstorming the idea to the first merge (with and without EGM) |
-| `LESSONS.md` | A record of failures, down to where the fix was placed (Rung) and confirmation that the guard fires (Proof) |
-| `tests/verify_ui.mjs` | A generic UI check. Judges browser errors (console errors, uncaught exceptions, failed loads) by exit code. For the correctness of the screen itself, add conditions your project can measure (for a typesetting example, see `examples/compositor/tests/verify_layout.mjs`) |
-| `.github/workflows/verify.yml` | The required check that becomes a merge condition |
-| `.github/CODEOWNERS` | Requires human approval for changes to tests, gates and the specification |
-| `.env.example` / `.gitignore` | Templates for keeping real secrets out of the working area |
+This is an ongoing research project.
 
-## Setting it up
+The proposed framework does not yet establish the general superiority of its engineering principles over alternative approaches, nor does it demonstrate the full automation or long-term effectiveness of Engineering Metabolism.
 
-Example messages to give the agent at each stage are in [`kit/PROMPTS.en.md`](kit/PROMPTS.en.md).
+Future research directions include:
 
-### Starting from a vague idea
+- Formal verification of software production protocols
+- Controlled experiments separating model improvements from factory improvements
+- Longitudinal evaluation of Engineering Metabolism
+- Safe composition and specialization of autonomous development teams
+- Knowledge transfer and shared engineering capabilities across independent Software Factories
 
-These steps start from a state where not a single line of code exists yet. The key is to **put the walls up before letting the agent write the implementation**.
-
-1. **Prepare the repository** — Copy the contents of `kit/` into a new repository, replace `@your-team` in `.github/CODEOWNERS` with yourself (or your team), and push.
-2. **Give the agent its own credentials** — Have the agent work under a separate account or a GitHub App, without permission to change repository settings, rulesets or workflows. GitHub does not let you approve your own pull requests, so if the agent works under your account, code-owner approval stops meaning anything.
-3. **Configure the first stage of the ruleset** — Block direct pushes to the default branch so that pull requests are required, and require code-owner review. Allow no one to bypass it (administrators included).
-4. **Shape the idea** ([PROMPTS 1](kit/PROMPTS.en.md#1-shape-the-idea)) — With the [EGM plugin](https://github.com/google/elephant-goldfish-model), go through `egm-brainstorm` → `egm-draft` → `egm-review` → `egm-resolve`, and put the approved design document in `docs/designs/`. Without it, brainstorm with a design session that writes no code, write the result up as a design document, and have a different session review it.
-5. **Derive the specification and acceptance tests** ([PROMPTS 2](kit/PROMPTS.en.md#2-derive-the-specification-and-acceptance-tests)) — Have the agent create `SPEC.md` and acceptance tests (all Red at this point) from the design document, and replace the commands in `verify.yml` with those for the chosen technology stack. A human reads `SPEC.md` and the tests before merging.
-6. **Configure the second stage of the ruleset** — Once `verify` has passed, add it to the required status checks. The walls are now complete.
-7. **Break the work down and run the cycle** ([PROMPTS 3–6](kit/PROMPTS.en.md#3-break-the-work-down)) — Split `PLAN.md` into steps, have a new session implement one step at a time, and have a different new session review only the diff. For defects, have the agent write a reproduction test before fixing.
-
-### Adding it to an existing repository
-
-1. Copy the contents of `kit/` to the root of the repository. If an `AGENTS.md` already exists, merge it into the Part 1 / Part 2 structure.
-2. Write `SPEC.md` starting from the existing behavior you can't afford to break. With EGM, it is easier to first generate design documents for the existing code with `egm-bootstrap` and extract from them.
-3. Replace the commands in `verify.yml` with your project's (CI will fail until you do). Trim Part 2 of `AGENTS.md` to fit your project (keep it within 20–30 lines).
-4. As in steps 2, 3 and 6 above, separate the credentials and configure the ruleset. **Until you do, none of these files is a "wall".**
-5. The first step: the next time you fix a defect, use [PROMPTS 6](kit/PROMPTS.en.md#6-fix-a-defect). Have the agent write a reproduction test before fixing, and watch it fail before letting it fix the defect.
-
-### Checklist after setup
-
-Placing the files enforces nothing. Only when all of the following hold do they become "walls" that neither AI nor humans can break through.
-
-- [ ] The `verify` workflow succeeds on the default branch
-- [ ] A ruleset makes `verify` a required status check
-- [ ] A ruleset requires code-owner review
-- [ ] No one is allowed to bypass the ruleset (administrators included)
-- [ ] The agent works under a separate account or a GitHub App, not the human's
-- [ ] The credentials the agent uses (tokens or GitHub Apps) have no permission to change repository settings, rulesets or workflows
-- [ ] No real `.env` or keys exist in the agent's working environment (`.gitignore` only prevents accidental commits; it does not prevent reading)
-- [ ] The first regression immunity test was added only after confirming it fails against a deliberately broken version
-
-**Notes**
-- gitleaks-action needs a free license key (`GITLEAKS_LICENSE`) for repositories owned by organization accounts. It is not needed for personal accounts.
-- `AGENTS.md` is a common location read by many agent tools. For tools that read their own file names (`GEMINI.md`, `CLAUDE.md` and so on), have that file refer to `AGENTS.md`.
-
-## What this kit guarantees, and what it doesn't
-
-Provided the checklist above is satisfied:
-
-**It guarantees that**
-- No change that fails the required checks gets merged, whoever made it
-- Changes to tests, gates and the specification need human approval
-- The agent cannot read secrets that do not exist in its working environment
-- In the typesetting example, figures and tables crossing page boundaries, broken chapter page breaks and subheadings stranded at the bottom of a page are detected across all 8 combinations of page size × writing direction (page breaks in print are not covered)
-
-**It does not guarantee**
-- The correctness of anything the tests don't measure. Errors in the specification itself, authorization loopholes, performance regressions, unknown attacks and so on can remain even when the tests pass
-- The thoroughness of the tests themselves. Weak tests pass weakly (compensate with mutation testing and with checks against deliberately broken versions)
-- Protection against people or agents with permission to change the settings
-- Local pre-commit hooks and deny settings in agent tools are useful as early warnings, but they can be bypassed, so they are not walls
-
-For areas where a mistake does serious damage — authentication, payments, data deletion and the like — the assumption is that a human reads the diff in addition to the tests (Section 1.2 of the paper).
-
-## Relationship to the Elephant-Goldfish Model (EGM)
-
-This kit covers a different stage from Google's [Elephant-Goldfish Model](https://github.com/google/elephant-goldfish-model) plugin, and is designed to be used alongside it.
-
-| Stage | Covered by |
-| --- | --- |
-| Concept and design (brainstorming, drafting design documents, memoryless review, human approval, reporting drift between design documents and code) | **EGM** |
-| From design to specification | Derive `SPEC.md` from the approved design document (`docs/designs/`) |
-| Implementation and verification (walls around the working area, judgment by exit code, diff review, code-owner approval) | **This kit** |
-| Learning and organization (promotion to regression immunity tests, evidence-based pruning, rollout across the organization) | **This kit** |
-
-EGM's Goldfish review design documents (and the source code they refer to), not the diffs of changes. EGM also has no enforcement through tests or permissions, so the part that "measures whether it's fixed" is covered by this kit. See Section 3.5 of the paper for details.
-
-## The verification code is itself verified
-
-This repository's CI (`npm test`) builds deliberately broken versions of the typesetting tool every time, and confirms that the checks fail **only the combinations that correspond to the broken part**.
-
-| Tool run | Vertical (4 page sizes) | Horizontal (4 page sizes) |
-| --- | --- | --- |
-| Compositor itself | 4/4 pass | 4/4 pass |
-| Version with vertical page alignment disabled | 0/4 | 4/4 pass |
-| Version with horizontal chapter page breaks removed | 4/4 pass | 0/4 |
-| Version with code figures taller than a page | 4/4 pass | 0/4 |
-| Version that does not push tables and subheadings to the next page (vertical) | 0/4 | 4/4 pass |
-| Version that does not push tables and subheadings to the next page (horizontal) | 4/4 pass | 0/4 |
-
-A check that fails everything and a check that looks at nothing are both caught here. The background is in Appendices 5 and 6 of the paper.
-
-`npm test` also checks that the English translation of the paper has not drifted from the Japanese original: headings, tables, code, the skeletons of the diagrams, links and numbers must match.
-
-## Compositor
-
-[`examples/compositor/compositor.html`](examples/compositor/compositor.html) is a long-form writing and typesetting tool that works just by opening it in a browser (vertical and horizontal writing, A4/B5/A5/A6 page sizes, paged view in paper mode, footnotes, images, charts). Data is saved in the browser (IndexedDB) and can be exported as Markdown, one file per chapter, for management with git. The tool's interface is in Japanese. See [`examples/compositor/README.md`](examples/compositor/README.md) for details.
+The long-term objective is to develop an engineering foundation for software production systems that are not only autonomous, but also verifiable, recoverable, and capable of governed evolution.
 
 ## License
 
-[Apache License 2.0](LICENSE). The paper (`docs/`) is provided under the same license.
+[Apache License 2.0](LICENSE).
 
-The paper refers to and cites the following.
+---
 
-- Google, *Elephant-Goldfish Model* (github.com/google/elephant-goldfish-model)
-- m4lka ([@m4lkxx](https://x.com/m4lkxx)), *Harness, Loops, Graphs: What Each Layer Fixes and What It Breaks* — the Level 0–7 table in Chapter 4 translates and summarizes the stages from this article.
-- Arcos ([@0xarcos](https://x.com/0xarcos)), *Harness Engineering: How to Build AI Agents That Never Make the Same Mistake Twice* — the "half-life of a fix" ladder and evidence-based pruning in Chapter 4, and the repeat-failure rate in Chapter 1, map this article's framework onto the paper's terminology.
-- The LangChain, SWE-agent, OpenAI and Vercel figures cited in Chapters 4 and 6 have each been checked against their primary sources (listed at the end of the paper).
+**Build the Factory, Not Just the Software.**
+
+**Make the Right Path the Easiest Path.**
+
+**Build Software. Build the Ability to Build.**
